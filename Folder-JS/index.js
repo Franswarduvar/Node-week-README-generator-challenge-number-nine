@@ -1,67 +1,74 @@
 // TODO: Include packages needed for this application
+const path = require('path');
 const inquirer = require('inquirer');
 const fs = require('fs');
-const generateMarkdown = require('generateMarkdown.js');
+const generateMarkdown = require('./generateMarkdown');
+const { ifError } = require('assert');
 
 // TODO: Create an array of questions for user input
+
 const questions = [
     {
         type: 'input',
-        message: 'What would you like to call your READ.me file?',
+        message: 'What is the name of your project?',
         name: 'title',
       },
       {
           type: 'input',
-          message: 'How would you describe your project?',
+          message: 'Please provide a short description of your project?',
           name: 'Description',
         },
         {
           type: 'input',
-          message: 'Would you like a section of a table of contents?',
-          name: 'Tcontents',
-        },
-        {
-          type: 'input',
-          message: 'Would you like a section for instalation?',
+          message: 'What are the installation steps for your project?',
           name: 'Installation',
         },
         {
           type: 'input',
-          message: 'Would you like a section for Usage?',
+          message: 'How does the user most effectivly use your repo?',
           name: 'Usage',
         },
         {
-            type: 'input',
-            message: 'Would you like a section for Licensing?',
-            name: 'License',
-          },
+          type: 'list',
+          name: 'license',
+          message: 'What kind of license should your project have?',
+          choices: ['MIT', 'APACHE 2.0', 'GPL 3.0', 'BSD 3', 'None'],
+        },
           {
             type: 'input',
-            message: 'Would you like a section for contributions?',
+            message: 'How can you contribute to this project?',
             name: 'Contributions',
           },
           {
             type: 'input',
-            message: 'Would you like a section for tests?',
+            message: 'Whats the best way for the user to test the project?',
             name: 'Tests',
           },
           {
             type: 'input',
-            message: 'Would you like a section for questions?',
-            name: 'Questions',
+            message: 'Please provide an emails for further contact?',
+            name: 'Email',
+          },
+          {
+            type: 'input',
+            message: 'What is your github?',
+            name: 'github',
           },
 
 ];
-then((response) =>
-console.log(response)
-);
-then(answers => generateMarkdown(answers))
 
 // TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
+function writeToFile(fileName, data) {
+  return fs.writeFileSync(path.join(process.cwd(),'/dist',fileName),data);
+}
 
 // TODO: Create a function to initialize app
-function init() {}
+function init() {
+  inquirer.prompt(questions).then((answers,err)=>{
+    if(err) console.log(err);
+    writeToFile('README.md',generateMarkdown(answers))
+  })
+}
 
 // Function call to initialize app
 init();
